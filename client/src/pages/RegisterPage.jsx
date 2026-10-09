@@ -1,10 +1,10 @@
 ﻿import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { UserPlus, Mail, Lock, User, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { UserPlus, Mail, Lock, User, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, Send, Sparkles } from "lucide-react";
 
 export default function RegisterPage() {
-  const { register } = useAuth();
+  const { register, resendVerificationEmail } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -16,6 +16,9 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [verificationPendingEmail, setVerificationPendingEmail] = useState(null);
+  const [resending, setResending] = useState(false);
+  const [resendStatus, setResendStatus] = useState("");
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -52,16 +55,86 @@ export default function RegisterPage() {
     setErrorMessage("");
 
     try {
-      await register(formData.name.trim(), formData.email.trim(), formData.password);
-      navigate("/templates", { replace: true });
+      const result = await register(formData.name.trim(), formData.email.trim(), formData.password);
+      
+      if (result?.emailConfirmationRequired) {
+        setVerificationPendingEmail(result.email || formData.email.trim());
+      } else {
+        navigate("/templates", { replace: true });
+      }
     } catch (err) {
       console.error("Registration error:", err);
-      const msg = err.response?.data?.message || "Failed to create account. Please try again.";
+      const msg = err.message || err.response?.data?.message || "Failed to create account. Please try again.";
       setErrorMessage(msg);
     } finally {
       setLoading(false);
     }
   };
+
+  const handleResend = async () => {
+    if (!verificationPendingEmail) return;
+    setResending(true);
+    setResendStatus("");
+    try {
+      await resendVerificationEmail(verificationPendingEmail);
+      setResendStatus("Verification email re-sent! Please check your inbox & spam folder.");
+    } catch (err) {
+      setResendStatus("Failed to resend: " + (err.message || "Please try again later."));
+    } finally {
+      setResending(false);
+    }
+  };
+
+  // If Supabase Email Verification is required, show verification screen
+  if (verificationPendingEmail) {
+    return (
+      <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 bg-slate-950">
+        <div className="w-full max-w-md bg-slate-900/90 border border-indigo-500/30 rounded-3xl p-8 shadow-2xl shadow-indigo-950/40 backdrop-blur-md text-center animate-in zoom-in-95 duration-300">
+          <div className="w-16 h-16 rounded-3xl bg-indigo-600/20 border border-indigo-500/40 flex items-center justify-center mx-auto mb-5 text-indigo-400 relative">
+            <Mail className="w-8 h-8 animate-pulse" />
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-900" />
+          </div>
+
+          <h2 className="text-2xl font-bold text-white tracking-tight mb-2">Check Your Inbox!</h2>
+          <p className="text-sm text-slate-300 mb-2">
+            We sent a verification link to:
+          </p>
+          <div className="inline-block px-3.5 py-1.5 rounded-xl bg-slate-800 text-indigo-300 font-mono text-xs mb-5 border border-slate-700">
+            {verificationPendingEmail}
+          </div>
+
+          <p className="text-xs text-slate-400 leading-relaxed mb-6">
+            Please open the email from Supabase and click the confirmation link to activate your account. Once verified, you can sign in directly!
+          </p>
+
+          {resendStatus && (
+            <div className="mb-4 p-3 rounded-xl bg-indigo-950/60 border border-indigo-800/60 text-xs text-indigo-200">
+              {resendStatus}
+            </div>
+          )}
+
+          <div className="space-y-3">
+            <Link
+              to="/login"
+              className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Go to Sign In</span>
+            </Link>
+
+            <button
+              onClick={handleResend}
+              disabled={resending}
+              className="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs transition-colors flex items-center justify-center gap-2 border border-slate-700 cursor-pointer disabled:opacity-50"
+            >
+              {resending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+              <span>Resend Verification Email</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 bg-slate-950">

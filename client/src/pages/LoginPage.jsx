@@ -1,10 +1,10 @@
 ﻿import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { LogIn, Mail, Lock, Eye, EyeOff, Loader2, Sparkles, AlertCircle } from "lucide-react";
+import { LogIn, Mail, Lock, Eye, EyeOff, Loader2, Sparkles, AlertCircle, Send, CheckCircle2 } from "lucide-react";
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, resendVerificationEmail } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -15,6 +15,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [unconfirmedEmail, setUnconfirmedEmail] = useState(null);
+  const [resending, setResending] = useState(false);
+  const [resendNotice, setResendNotice] = useState("");
 
   const redirectMessage = location.state?.message;
   const from = location.state?.from?.pathname || "/templates";
@@ -25,6 +28,8 @@ export default function LoginPage() {
       [e.target.name]: e.target.value,
     }));
     setErrorMessage("");
+    setUnconfirmedEmail(null);
+    setResendNotice("");
   };
 
   const handleSubmit = async (e) => {
@@ -36,16 +41,36 @@ export default function LoginPage() {
 
     setLoading(true);
     setErrorMessage("");
+    setUnconfirmedEmail(null);
+    setResendNotice("");
 
     try {
       await login(formData.email, formData.password);
       navigate(from, { replace: true });
     } catch (err) {
       console.error("Login failed:", err);
-      const msg = err.response?.data?.message || "Invalid credentials. Please verify your email and password.";
-      setErrorMessage(msg);
+      if (err.isEmailNotConfirmed) {
+        setUnconfirmedEmail(err.email || formData.email);
+        setErrorMessage("Your email address has not been verified yet.");
+      } else {
+        const msg = err.message || err.response?.data?.message || "Invalid credentials. Please verify your email and password.";
+        setErrorMessage(msg);
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!unconfirmedEmail) return;
+    setResending(true);
+    try {
+      await resendVerificationEmail(unconfirmedEmail);
+      setResendNotice("Verification email re-sent! Please check your inbox.");
+    } catch (err) {
+      setResendNotice("Could not resend email: " + (err.message || "Please try again later."));
+    } finally {
+      setResending(false);
     }
   };
 
@@ -75,7 +100,28 @@ export default function LoginPage() {
         {errorMessage && (
           <div className="mb-5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-2.5 text-xs text-rose-300 animate-in fade-in">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
-            <span>{errorMessage}</span>
+            <div className="flex-1">
+              <p className="font-semibold">{errorMessage}</p>
+              {unconfirmedEmail && (
+                <div className="mt-2 pt-2 border-t border-rose-500/20 flex flex-col gap-2">
+                  <p className="text-[11px] text-rose-200/90">
+                    Did not receive the verification email?
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={resending}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-rose-600/80 hover:bg-rose-600 px-3 py-1 rounded-lg self-start transition-colors cursor-pointer"
+                  >
+                    {resending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
+                    <span>Resend Verification Email</span>
+                  </button>
+                  {resendNotice && (
+                    <p className="text-[11px] text-emerald-300 font-medium">{resendNotice}</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
 

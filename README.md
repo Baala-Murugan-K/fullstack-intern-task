@@ -246,7 +246,8 @@ fullstack-intern-task/
 
 ## 👤 Candidate Information
 
-- **Name**: Candidate Name
-- **Email**: candidate@example.com
-- **Repository**: [https://github.com/your-username/fullstack-intern-task](https://github.com/your-username/fullstack-intern-task)
+- **Name**: Baala Murugan K
+- **Email**: baala25harish01@gmail.com
+- **Repository**: [https://github.com/Baala-Murugan-K/fullstack-intern-task](https://github.com/Baala-Murugan-K/fullstack-intern-task)
 - **Role Applied**: Full Stack Web Developer Intern
+
