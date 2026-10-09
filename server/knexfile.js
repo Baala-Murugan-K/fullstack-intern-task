@@ -19,6 +19,8 @@ module.exports = {
         min: 0,
         max: 10,
         acquireTimeoutMillis: 10000,
+        createTimeoutMillis: 10000,
+        idleTimeoutMillis: 30000,
       }
     : undefined,
 };
