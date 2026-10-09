@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "mini-saas-template-store-server",
   "version": "1.0.0",
   "description": "Backend API for Mini SaaS Template Store with Supabase PostgreSQL and Knex.js",
