@@ -239,7 +239,7 @@ fullstack-intern-task/
 1. In Vercel, click **Add New...** -> **Project** and select your GitHub repository.
 2. Set **Root Directory** to `client`.
 3. Add Environment Variable:
-   - `VITE_API_BASE_URL`: Your hosted backend API URL (e.g. `https://your-backend.onrender.com/api`).
+   - `VITE_API_BASE_URL`: Your hosted backend API URL (e.g. `https://fullstack-intern-task-te6m.onrender.com/api`).
 4. Click **Deploy**. Single-page routing is automatically handled via `vercel.json`.
 
 ---
@@ -250,4 +250,5 @@ fullstack-intern-task/
 - **Email**: baala25harish01@gmail.com
 - **Repository**: [https://github.com/Baala-Murugan-K/fullstack-intern-task](https://github.com/Baala-Murugan-K/fullstack-intern-task)
 - **Role Applied**: Full Stack Web Developer Intern
+
 
