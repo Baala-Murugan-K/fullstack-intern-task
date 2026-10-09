@@ -247,7 +247,7 @@ fullstack-intern-task/
 ## 👤 Candidate Information
 
 - **Name**: Baala Murugan K
-- **Email**: baala25harish01@gmail.com
+- **Email**: baalamurugan.k25@gmail.com
 - **Repository**: [https://github.com/Baala-Murugan-K/fullstack-intern-task](https://github.com/Baala-Murugan-K/fullstack-intern-task)
 - **Live Frontend (Vercel)**: [https://fullstack-intern-task-six.vercel.app](https://fullstack-intern-task-six.vercel.app)
 - **Live Backend API (Render)**: [https://fullstack-intern-task-te6m.onrender.com](https://fullstack-intern-task-te6m.onrender.com)
