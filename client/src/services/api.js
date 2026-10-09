@@ -1,6 +1,13 @@
 ﻿import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const isLocalhost =
+  typeof window !== "undefined" &&
+  (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+const DEFAULT_PROD_API = "https://fullstack-intern-task-te6m.onrender.com/api";
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || (isLocalhost ? "http://localhost:5000/api" : DEFAULT_PROD_API);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
