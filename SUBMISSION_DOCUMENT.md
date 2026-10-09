@@ -8,10 +8,15 @@
 ## 📌 Candidate & Submission Details
 - **Candidate Name**: Baala Murugan K
 - **Email**: baalamurugan.k25@gmail.com
+- **Portfolio**: [Baala Murugan K — Full Stack Developer](https://baala-murugan-k.github.io/KBM-Portfolio/)
 - **GitHub Repository**: [https://github.com/Baala-Murugan-K/fullstack-intern-task](https://github.com/Baala-Murugan-K/fullstack-intern-task)
 - **Live Frontend (Vercel)**: [https://fullstack-intern-task-six.vercel.app/templates](https://fullstack-intern-task-six.vercel.app/templates)
 - **Live Backend API (Render)**: [https://fullstack-intern-task-te6m.onrender.com](https://fullstack-intern-task-te6m.onrender.com)
 - **Database**: Supabase PostgreSQL (Cloud)
+
+### 🌟 Relevant Projects
+1. **[MockMind - AI Mock Interview Platform](https://mock-mind-ten.vercel.app/)**
+2. **[Personal Finance Tracker](https://finance-tracker-gamma-lemon.vercel.app/)**
 
 ---
 
@@ -94,3 +99,4 @@ npm run dev
 cd ../server
 npm test
 ```
+
